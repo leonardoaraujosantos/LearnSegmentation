@@ -1,6 +1,9 @@
 # Semantic Segmentation
 Implement most common semantic segmentation algorithms. I will try my best to implement good reference code on the most comon deep learning frameworks.
 
+### Example
+![](docs/imgs/SemanticSegmentation.png)
+
 ### Reference Papers
 * [Fully Convolutional Networks for Semantic Segmentation](https://people.eecs.berkeley.edu/~jonlong/long_shelhamer_fcn.pdf)
 * [Learning Deconvolution Network for Semantic Segmentation](https://arxiv.org/pdf/1505.04366.pdf)
