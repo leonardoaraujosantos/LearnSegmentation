@@ -16,7 +16,7 @@ class TrainModel(object):
         self.__logdir = logdir
         self.__savedir = savedir
 
-    def train(self, mode = 'fcn', epochs = 600, learning_rate = 0.001, checkpoint = ''):
+    def train(self, mode = 'fcn', epochs = 600, learning_rate_init = 0.001, checkpoint = ''):
         # Avoid allocating the whole memory
         gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.6)
         sess = tf.InteractiveSession(config=tf.ConfigProto(gpu_options=gpu_options))
@@ -59,7 +59,7 @@ class TrainModel(object):
         update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
         with tf.name_scope("Solver"):
             global_step = tf.Variable(0, trainable=False)
-            starter_learning_rate = learning_rate
+            starter_learning_rate = learning_rate_init
             # decay every 10000 steps with a base of 0.96
             learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step,
                                                        1000, 0.9, staircase=True)
@@ -85,8 +85,8 @@ class TrainModel(object):
 
         # Monitor loss, learning_rate, global_step, etc...
         tf.summary.scalar("loss_train", loss)
-        #tf.summary.scalar("learning_rate", learning_rate)
-        #tf.summary.scalar("global_step", global_step)
+        tf.summary.scalar("learning_rate", learning_rate)
+        tf.summary.scalar("global_step", global_step)
         # merge all summaries into a single op
         merged_summary_op = tf.summary.merge_all()
 
