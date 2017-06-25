@@ -28,4 +28,8 @@ Segmentation](https://arxiv.org/pdf/1511.00561.pdf)
 * [CS231n 2016 Lecture 13](https://www.youtube.com/watch?v=ByjaPdWXKJ4)
 * [Pixelwise semantic labelling using deep networks](https://www.youtube.com/watch?v=1oXjVyrIaxg)
 * [Datageeks Data Day - Semantic Segmentation](https://www.youtube.com/watch?v=kgXc-XTyu-w)
+* [Fully Convolutional Networks for Semantic Segmentation talk](http://techtalks.tv/talks/fully-convolutional-networks-for-semantic-segmentation/61606/)
 * [Python Fire](https://github.com/google/python-fire/blob/master/doc/guide.md)
+
+### Reference Projects
+* https://github.com/shekkizh/FCN.tensorflow
