@@ -3,9 +3,9 @@ import model_util as util
 
 
 class FullyConvolutionalNetworks(object):
-    def __init__(self, input=None, use_placeholder=True, training_mode=True):
+    def __init__(self, input=None, use_placeholder=True, training_mode=True, img_size = 224, num_classes=151):
         self.__x = tf.placeholder(tf.float32, shape=[None, 66, 200, 3], name='IMAGE_IN')
-        self.__y_ = tf.placeholder(tf.float32, shape=[None, 1], name='LABEL_IN')
+        self.__label = tf.placeholder(tf.int32, shape=[None, 66, 200, 1], name='LABEL_IN')
         self.__dropout_prob = tf.placeholder(tf.float32, name='drop_prob')
         self.__use_placeholder = use_placeholder
 
@@ -67,14 +67,23 @@ class FullyConvolutionalNetworks(object):
         self.__conv_t2_out_bn = util.batch_norm(self.__conv_t2_out, training_mode, name='bn_t_c2')
         self.__conv_t2_out_act = util.relu(self.__conv_t2_out_bn, do_summary=False)
 
-        self.__conv_t1_out = util.conv2d_transpose(self.__conv_t2_out_act, (5, 5), (66, 200), 24, 3, 2, name="dconv5",
+        # Observe that the last deconv depth is the same as the number of classes
+        self.__conv_t1_out = util.conv2d_transpose(self.__conv_t2_out_act, (5, 5), (66, 200), 24, num_classes, 2, name="dconv5",
                                                    do_summary=False)
         self.__conv_t1_out_bn = util.batch_norm(self.__conv_t1_out, training_mode, name='bn_t_c1')
-        self.__y = util.relu(self.__conv_t1_out_bn, do_summary=False)
+        self.__y = self.__conv_t1_out_bn
+
+        # Now we filter on the third dimension the the strogest pixels from a particular class
+        self.__anotation_pre = tf.argmax(self.__conv_t1_out_bn, dimension=3, name="prediction")
+        self.__anotation = tf.expand_dims(self.__anotation_pre, dim=3)
 
     @property
     def output(self):
         return self.__y
+
+    @property
+    def anotation_prediction(self):
+        return self.__anotation
 
     @property
     def input(self):
@@ -86,7 +95,7 @@ class FullyConvolutionalNetworks(object):
     @property
     def label_in(self):
         if self.__use_placeholder:
-            return self.__y_
+            return self.__label
         else:
             return None
 

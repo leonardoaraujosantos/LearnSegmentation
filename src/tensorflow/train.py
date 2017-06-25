@@ -40,10 +40,32 @@ class TrainModel(object):
 
         # Add input image on summary
         tf.summary.image("input_image", model_in, 10)
+        #tf.summary.image("output_image", model_out, 10)
+
+        # Get all model "parameters" that are trainable
+        train_vars = tf.trainable_variables()
 
         # Add loss
+        # Segmentation problems often uses this "spatial" softmax (Basically we want to classify each pixel)
+        with tf.name_scope("SPATIAL_SOFTMAX"):
+            loss = tf.reduce_mean((tf.nn.sparse_softmax_cross_entropy_with_logits(
+                logits=model_out,labels=tf.squeeze(labels_in,squeeze_dims=[3]),name="spatial_softmax")))
 
         # Solver configuration
+        # Get ops to update moving_mean and moving_variance from batch_norm
+        # Reference: https://www.tensorflow.org/api_docs/python/tf/contrib/layers/batch_norm
+        update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+        with tf.name_scope("Solver"):
+            global_step = tf.Variable(0, trainable=False)
+            starter_learning_rate = learning_rate
+            # decay every 10000 steps with a base of 0.96
+            learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step,
+                                                       1000, 0.9, staircase=True)
+
+            # Basically update the batch_norm moving averages before the training step
+            # http://ruishu.io/2016/12/27/batchnorm/
+            with tf.control_dependencies(update_ops):
+                train_step = tf.train.AdamOptimizer(learning_rate).minimize(loss, global_step=global_step)
 
         # Initialize all random variables (Weights/Bias)
         sess.run(tf.global_variables_initializer())
