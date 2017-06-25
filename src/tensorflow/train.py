@@ -36,11 +36,13 @@ class TrainModel(object):
         model_in = segmentation_model.input
         model_out = segmentation_model.output
         labels_in = segmentation_model.label_in
+        anotation_prediction = segmentation_model.anotation_prediction
         model_drop = segmentation_model.dropout_control
 
         # Add input image on summary
-        tf.summary.image("input_image", model_in, 10)
-        #tf.summary.image("output_image", model_out, 10)
+        tf.summary.image("input_image", model_in, 2)
+        tf.summary.image("ground_truth", tf.cast(labels_in, tf.uint8), max_outputs=2)
+        tf.summary.image("pred_annotation", tf.cast(anotation_prediction, tf.uint8), max_outputs=2)
 
         # Get all model "parameters" that are trainable
         train_vars = tf.trainable_variables()
@@ -82,11 +84,11 @@ class TrainModel(object):
             saver = tf.train.Saver(max_to_keep=None)
 
         # Monitor loss, learning_rate, global_step, etc...
-        #tf.summary.scalar("loss_train", loss)
+        tf.summary.scalar("loss_train", loss)
         #tf.summary.scalar("learning_rate", learning_rate)
         #tf.summary.scalar("global_step", global_step)
         # merge all summaries into a single op
-        #merged_summary_op = tf.summary.merge_all()
+        merged_summary_op = tf.summary.merge_all()
 
         # Configure where to save the logs for tensorboard
         summary_writer = tf.summary.FileWriter(self.__logdir, graph=tf.get_default_graph())
