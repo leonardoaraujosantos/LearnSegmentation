@@ -15,6 +15,7 @@ The idea is to give a clean code as reference, and have fun implementing those p
 * [SegNet: A Deep Convolutional
 Encoder-Decoder Architecture for Image
 Segmentation](https://arxiv.org/pdf/1511.00561.pdf)
+* [Playing for Data: Ground Truth from Computer Games](https://arxiv.org/pdf/1608.02192.pdf)
 
 ### Frameworks used
 * [Tensorflow 1.2](https://www.tensorflow.org/)
