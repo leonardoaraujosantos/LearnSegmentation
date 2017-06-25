@@ -23,7 +23,8 @@ Segmentation](https://arxiv.org/pdf/1511.00561.pdf)
 ### Datasets
 * [Virtual KITTI dataset](http://www.xrce.xerox.com/Our-Research/Computer-Vision/Proxy-Virtual-Worlds)
 * [MSCOCO](http://mscoco.org/home/)
-* [MIT Scene parsing benchmark](http://sceneparsing.csail.mit.edu/)
+* [MIT Scene Parsing Benchmark](http://sceneparsing.csail.mit.edu/)
+* [MIT Scene Parsing Development Kit](https://github.com/CSAILVision/sceneparsing)
 
 ### References
 * [Semantic Segmentation chapter](https://leonardoaraujosantos.gitbooks.io/artificial-inteligence/content/image_segmentation.html)
