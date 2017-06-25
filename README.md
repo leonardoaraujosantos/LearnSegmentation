@@ -15,6 +15,8 @@ The idea is to give a clean code as reference, and have fun implementing those p
 * [SegNet: A Deep Convolutional
 Encoder-Decoder Architecture for Image
 Segmentation](https://arxiv.org/pdf/1511.00561.pdf)
+* [ENet: A Deep Neural Network Architecture for
+Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 * [Playing for Data: Ground Truth from Computer Games](https://arxiv.org/pdf/1608.02192.pdf)
 
 ### Frameworks used
@@ -36,4 +38,5 @@ Segmentation](https://arxiv.org/pdf/1511.00561.pdf)
 * [Python Fire](https://github.com/google/python-fire/blob/master/doc/guide.md)
 
 ### Reference Projects
-* https://github.com/shekkizh/FCN.tensorflow
+* [FCN on tensorflow](https://github.com/shekkizh/FCN.tensorflow)
+* [Enet Pytorch](https://gist.github.com/ndronen/19154831c2049a69e8d53dea8cf3e744)
