@@ -3,7 +3,8 @@ Implement most common semantic segmentation algorithms.
 * FCN
 * Deconvet
 * Segnet
-I will try my best to implement good reference code on the most comon deep learning frameworks.
+
+The idea is to give a clean code as reference, and have fun implementing those papers.
 
 ### Example
 ![](docs/imgs/SemanticSegmentation.png)
