@@ -36,6 +36,7 @@ Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 * [Datageeks Data Day - Semantic Segmentation](https://www.youtube.com/watch?v=kgXc-XTyu-w)
 * [Fully Convolutional Networks for Semantic Segmentation talk](http://techtalks.tv/talks/fully-convolutional-networks-for-semantic-segmentation/61606/)
 * [Python Fire](https://github.com/google/python-fire/blob/master/doc/guide.md)
+* [Conditional Random Field](https://en.wikipedia.org/wiki/Conditional_random_field)
 
 ### Reference Projects
 * [FCN on tensorflow](https://github.com/shekkizh/FCN.tensorflow)
