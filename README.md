@@ -41,3 +41,5 @@ Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 ### Reference Projects
 * [FCN on tensorflow](https://github.com/shekkizh/FCN.tensorflow)
 * [Enet Pytorch](https://gist.github.com/ndronen/19154831c2049a69e8d53dea8cf3e744)
+* [Segnet Tensorflow](https://github.com/andreaazzini/segnet)
+* [Deconvnet Tensorflow](https://github.com/fabianbormann/Tensorflow-DeconvNet-Segmentation)
