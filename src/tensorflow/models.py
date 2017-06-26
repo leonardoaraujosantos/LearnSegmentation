@@ -6,7 +6,6 @@ class FullyConvolutionalNetworks(object):
     def __init__(self, input=None, use_placeholder=True, training_mode=True, img_size = 224, num_classes=151):
         self.__x = tf.placeholder(tf.float32, shape=[None, img_size, img_size, 3], name='IMAGE_IN')
         self.__label = tf.placeholder(tf.int32, shape=[None, img_size, img_size, 1], name='LABEL_IN')
-        self.__dropout_prob = tf.placeholder(tf.float32, name='drop_prob')
         self.__use_placeholder = use_placeholder
 
         ##### ENCODER
@@ -78,11 +77,13 @@ class FullyConvolutionalNetworks(object):
         with tf.name_scope('anotation_pred'):
             # Create the predicted annotation
             # Now we filter on the third dimension the the strogest pixels from a particular class
+            # Returns the index with the largest value across axes of a tensor, on our case the index will be one of the
+            # classes represented by the depth of our output (150 classes)
             self.__anotation = tf.argmax(self.__conv_t1_out_bn, dimension=3, name="prediction")
 
-            # Just some ops to print
-            self.__anotation = tf.Print(self.__anotation, [tf.shape(self.__anotation)], name='PrintShape2')
-            #self.__anotation_pre = tf.Print(self.__anotation_pre, [tf.shape(self.__anotation_pre)], name='PrintShape')
+            # Just some ops to print the output shape and the prediction
+            #self.__anotation = tf.Print(self.__anotation, [tf.shape(self.__anotation)], name='PrintShapeAnnotation')
+            #self.__y = tf.Print(self.__y, [tf.shape(self.__y)], name='PrintOutShape')
 
     @property
     def output(self):
@@ -105,10 +106,6 @@ class FullyConvolutionalNetworks(object):
             return self.__label
         else:
             return None
-
-    @property
-    def dropout_control(self):
-        return self.__dropout_prob
 
     @property
     def conv5(self):
