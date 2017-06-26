@@ -75,11 +75,12 @@ class FullyConvolutionalNetworks(object):
         # Model output (It's not the segmentation yet...)
         self.__y = self.__conv_t1_out_bn
 
-        # Create the predicted annotation
-        # Now we filter on the third dimension the the strogest pixels from a particular class
-        self.__anotation_pre = tf.argmax(self.__conv_t1_out_bn, dimension=3, name="prediction")
-        # Expand dimension
-        self.__anotation = tf.expand_dims(self.__anotation_pre, dim=3)
+        with tf.name_scope('anotation_pred'):
+            # Create the predicted annotation
+            # Now we filter on the third dimension the the strogest pixels from a particular class
+            self.__anotation_pre = tf.argmax(self.__conv_t1_out_bn, dimension=3, name="prediction")
+            # Expand dimension
+            self.__anotation = tf.expand_dims(self.__anotation_pre, dim=3)
 
     @property
     def output(self):

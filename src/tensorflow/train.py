@@ -20,7 +20,7 @@ class TrainModel(object):
         self.__input_val = input_val
         self.__memfrac = mem_frac
 
-    def train(self, mode='fcn', epochs=600, learning_rate_init=0.001, checkpoint='', batch_size=20):
+    def train(self, mode='fcn', epochs=600, learning_rate_init=0.001, checkpoint='', batch_size=50):
         # Avoid allocating the whole memory
         gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=self.__memfrac)
         sess = tf.InteractiveSession(config=tf.ConfigProto(gpu_options=gpu_options))
