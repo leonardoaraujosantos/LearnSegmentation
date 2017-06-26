@@ -78,9 +78,11 @@ class FullyConvolutionalNetworks(object):
         with tf.name_scope('anotation_pred'):
             # Create the predicted annotation
             # Now we filter on the third dimension the the strogest pixels from a particular class
-            self.__anotation_pre = tf.argmax(self.__conv_t1_out_bn, dimension=3, name="prediction")
-            # Expand dimension
-            self.__anotation = tf.expand_dims(self.__anotation_pre, dim=3)
+            self.__anotation = tf.argmax(self.__conv_t1_out_bn, dimension=3, name="prediction")
+
+            # Just some ops to print
+            self.__anotation = tf.Print(self.__anotation, [tf.shape(self.__anotation)], name='PrintShape2')
+            #self.__anotation_pre = tf.Print(self.__anotation_pre, [tf.shape(self.__anotation_pre)], name='PrintShape')
 
     @property
     def output(self):

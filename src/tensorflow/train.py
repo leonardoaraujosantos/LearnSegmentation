@@ -46,7 +46,8 @@ class TrainModel(object):
         # Add input image on summary
         tf.summary.image("input_image", model_in, 2)
         tf.summary.image("ground_truth", tf.cast(labels_in, tf.uint8), max_outputs=2)
-        tf.summary.image("pred_annotation", tf.cast(anotation_prediction, tf.uint8), max_outputs=2)
+        # Expand dimension before asking a sumary
+        tf.summary.image("pred_annotation", tf.cast(tf.expand_dims(anotation_prediction, dim=3), tf.uint8), max_outputs=2)
 
         # Get all model "parameters" that are trainable
         train_vars = tf.trainable_variables()
