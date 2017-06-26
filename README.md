@@ -28,6 +28,7 @@ Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 * [MSCOCO](http://mscoco.org/home/)
 * [MIT Scene Parsing Benchmark](http://sceneparsing.csail.mit.edu/)
 * [MIT Scene Parsing Development Kit](https://github.com/CSAILVision/sceneparsing)
+* [Cambridge Camsec](http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamSeq01/)
 
 ### References
 * [Semantic Segmentation chapter](https://leonardoaraujosantos.gitbooks.io/artificial-inteligence/content/image_segmentation.html)
@@ -43,3 +44,5 @@ Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 * [Enet Pytorch](https://gist.github.com/ndronen/19154831c2049a69e8d53dea8cf3e744)
 * [Segnet Tensorflow](https://github.com/andreaazzini/segnet)
 * [Deconvnet Tensorflow](https://github.com/fabianbormann/Tensorflow-DeconvNet-Segmentation)
+* [FCN, Segnet, UNet on Pytorch](https://github.com/bodokaiser/piwise)
+* [Pytorch for Semantic Segmentation](https://github.com/ycszen/pytorch-ss)
