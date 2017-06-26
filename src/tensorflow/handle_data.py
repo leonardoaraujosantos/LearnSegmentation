@@ -79,9 +79,10 @@ class HandleData:
             # image = scipy.misc.imread(train_xs[(train_batch_pointer + i) % num_train_images], mode="RGB")
             image = self.__train_xs[(self.__train_batch_pointer + i) % self.__num_train_images]
             # Crop top, resize to 66x200 and divide by 255.0
-            image = scipy.misc.imresize(image[crop_start:crop_end], [66, 200]) / 255.0
+            image = image / 255.0
             x_out.append(image)
-            y_out.append([self.__train_ys[(self.__train_batch_pointer + i) % self.__num_train_images]])
+            label = self.__train_ys[(self.__train_batch_pointer + i) % self.__num_train_images]
+            y_out.append(label)
             self.__train_batch_pointer += batch_size
 
 
@@ -101,7 +102,7 @@ class HandleData:
             # image = scipy.misc.imread(val_xs[(val_batch_pointer + i) % num_val_images], mode="RGB")
             image = self.__val_xs[(self.__val_batch_pointer + i) % self.__num_val_images]
             # Crop top, resize to 66x200 and divide by 255.0
-            image = scipy.misc.imresize(image[crop_start:crop_end], [66, 200]) / 255.0
+            image = image / 255.0
             x_out.append(image)
             y_out.append([self.__val_ys[(self.__val_batch_pointer + i) % self.__num_val_images]])
             self.__val_batch_pointer += batch_size
@@ -120,66 +121,62 @@ class HandleData:
 
         # Check if validation-set exist if not partition from training
         has_validation = not path_val == ''
-        if ".h5" in path_train:
-            print('HDF5 file')
-            # Read hdf5
-            self.__file = h5py.File(path_train, 'a')
-            # Check if the dataset exist
-            exist_train = "/Train/Labels" in self.__file
-            if exist_train:
-                # Initialize pre-existing datasets
-                self.__dataset_imgs = self.__file["/Train/Images"]
-                self.__dataset_label = self.__file["/Train/Labels"]
 
-                self.__xs = list(self.__dataset_imgs)
-                self.__ys = list(self.__dataset_label)
+        print('LMDB file')
+        env = lmdb.open(path_train, readonly=True)
 
-                self.__num_images = len(self.__xs)
-
-                # Create a zip list with images and angles
-                c = list(zip(self.__xs, self.__ys))
-
-                # Shuffle data
-                if shuffle:
-                    random.shuffle(c)
-
-                # Split the items on c
-                self.__xs, self.__ys = zip(*c)
-
-                # Check if validation set is not given
-                if not has_validation:
-                    print('Spliting training and validation')
-                    self.__split_training = True
-                    # Training set 80%
-                    self.__train_xs = self.__xs[:int(len(self.__xs) * train_perc)]
-                    self.__train_ys = self.__ys[:int(len(self.__xs) * train_perc)]
-
-                    # Validation set 20%
-                    self.__val_xs = self.__xs[-int(len(self.__xs) * val_perc):]
-                    self.__val_ys = self.__ys[-int(len(self.__xs) * val_perc):]
+        # Iterate file and load items on memory
+        with env.begin() as txn:
+            cursor = txn.cursor()
+            for key, value in cursor:
+                key_str = key.decode('ascii')
+                if 'label' in key_str:
+                    # Get shape information from key name
+                    info_key = key_str.split('_')
+                    # Get image shape [2:None] means from index 2 to the end
+                    shape_img = tuple(map(lambda x: int(x), info_key[2:None]))
+                    label_data = np.frombuffer(value, dtype=np.uint8).reshape(shape_img).astype(np.float32)
+                    label_data = np.expand_dims(label_data, axis=2)
+                    self.__ys.append(label_data)
                 else:
-                    print('Load validation dataset')
-                    self.__split_training = False
-                    # Read hdf5
-                    self.__file_val = h5py.File(path_val, 'a')
-                    # Check if the dataset exist
-                    exist_val = "/Train/Labels" in self.__file_val
-                    if exist_val:
-                        # Training set 100%
-                        self.__train_xs = self.__xs
-                        self.__train_ys = self.__ys
+                    # Get shape information from key name
+                    info_key = key_str.split('_')
+                    # Get image shape [2:None] means from index 2 to the end
+                    shape_img = tuple(map(lambda x: int(x), info_key[2:None]))
+                    self.__xs.append(np.frombuffer(value, dtype=np.uint8).reshape(shape_img).astype(np.float32))
 
-                        # Initialize pre-existing datasets
-                        self.__dataset_imgs_val = self.__file_val["/Train/Images"]
-                        self.__dataset_label_val = self.__file_val["/Train/Labels"]
+        self.__num_images = len(self.__xs)
 
-                        self.__val_xs = list(self.__dataset_imgs_val)
-                        self.__val_ys = list(self.__dataset_label_val)
-            else:
-                raise RuntimeError('Train dataset not found on hdf5')
+        # Create a zip list with images and angles
+        c = list(zip(self.__xs, self.__ys))
+
+        # Shuffle data
+        if shuffle:
+            random.shuffle(c)
+
+        # Split the items on c
+        self.__xs, self.__ys = zip(*c)
+
+        # Check if validation set is not given
+        if not has_validation:
+            print('Spliting training and validation')
+            self.__split_training = True
+            # Training set 80%
+            self.__train_xs = self.__xs[:int(len(self.__xs) * train_perc)]
+            self.__train_ys = self.__ys[:int(len(self.__xs) * train_perc)]
+
+            # Validation set 20%
+            self.__val_xs = self.__xs[-int(len(self.__xs) * val_perc):]
+            self.__val_ys = self.__ys[-int(len(self.__xs) * val_perc):]
         else:
-            print('LMDB file')
-            env = lmdb.open(path_train, readonly=True)
+            print('Load validation dataset')
+            self.__split_training = False
+            # Read lmdb
+            env = lmdb.open(path_val, readonly=True)
+
+            # Training set 100%
+            self.__train_xs = self.__xs
+            self.__train_ys = self.__ys
 
             # Iterate file and load items on memory
             with env.begin() as txn:
@@ -187,57 +184,10 @@ class HandleData:
                 for key, value in cursor:
                     key_str = key.decode('ascii')
                     if 'label' in key_str:
-                        self.__ys.append(np.float32(np.asscalar(np.frombuffer(value, dtype=np.float32, count=1))))
+                        self.__val_ys.append(np.float32(np.asscalar(np.frombuffer(value, dtype=np.float32, count=1))))
                     else:
                         # Get shape information from key name
                         info_key = key_str.split('_')
                         # Get image shape [2:None] means from index 2 to the end
                         shape_img = tuple(map(lambda x: int(x), info_key[2:None]))
-                        self.__xs.append(np.frombuffer(value, dtype=np.uint8).reshape(shape_img).astype(np.float32))
-
-            self.__num_images = len(self.__xs)
-
-            # Create a zip list with images and angles
-            c = list(zip(self.__xs, self.__ys))
-
-            # Shuffle data
-            if shuffle:
-                random.shuffle(c)
-
-            # Split the items on c
-            self.__xs, self.__ys = zip(*c)
-
-            # Check if validation set is not given
-            if not has_validation:
-                print('Spliting training and validation')
-                self.__split_training = True
-                # Training set 80%
-                self.__train_xs = self.__xs[:int(len(self.__xs) * train_perc)]
-                self.__train_ys = self.__ys[:int(len(self.__xs) * train_perc)]
-
-                # Validation set 20%
-                self.__val_xs = self.__xs[-int(len(self.__xs) * val_perc):]
-                self.__val_ys = self.__ys[-int(len(self.__xs) * val_perc):]
-            else:
-                print('Load validation dataset')
-                self.__split_training = False
-                # Read lmdb
-                env = lmdb.open(path_val, readonly=True)
-
-                # Training set 100%
-                self.__train_xs = self.__xs
-                self.__train_ys = self.__ys
-
-                # Iterate file and load items on memory
-                with env.begin() as txn:
-                    cursor = txn.cursor()
-                    for key, value in cursor:
-                        key_str = key.decode('ascii')
-                        if 'label' in key_str:
-                            self.__val_ys.append(np.float32(np.asscalar(np.frombuffer(value, dtype=np.float32, count=1))))
-                        else:
-                            # Get shape information from key name
-                            info_key = key_str.split('_')
-                            # Get image shape [2:None] means from index 2 to the end
-                            shape_img = tuple(map(lambda x: int(x), info_key[2:None]))
-                            self.__val_xs.append(np.frombuffer(value, dtype=np.uint8).reshape(shape_img).astype(np.float32))
+                        self.__val_xs.append(np.frombuffer(value, dtype=np.uint8).reshape(shape_img).astype(np.float32))

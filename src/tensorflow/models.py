@@ -4,8 +4,8 @@ import model_util as util
 
 class FullyConvolutionalNetworks(object):
     def __init__(self, input=None, use_placeholder=True, training_mode=True, img_size = 224, num_classes=151):
-        self.__x = tf.placeholder(tf.float32, shape=[None, 66, 200, 3], name='IMAGE_IN')
-        self.__label = tf.placeholder(tf.int32, shape=[None, 66, 200, 1], name='LABEL_IN')
+        self.__x = tf.placeholder(tf.float32, shape=[None, img_size, img_size, 3], name='IMAGE_IN')
+        self.__label = tf.placeholder(tf.int32, shape=[None, img_size, img_size, 1], name='LABEL_IN')
         self.__dropout_prob = tf.placeholder(tf.float32, name='drop_prob')
         self.__use_placeholder = use_placeholder
 
