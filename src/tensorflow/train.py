@@ -57,6 +57,11 @@ class TrainModel(object):
             loss = tf.reduce_mean((tf.nn.sparse_softmax_cross_entropy_with_logits(
                 logits=model_out,labels=tf.squeeze(labels_in,squeeze_dims=[3]),name="spatial_softmax")))
 
+        # Add model accuracy
+        with tf.name_scope("Loss_Validation"):
+            loss_val = tf.reduce_mean((tf.nn.sparse_softmax_cross_entropy_with_logits(
+                logits=model_out, labels=tf.squeeze(labels_in, squeeze_dims=[3]), name="spatial_softmax")))
+
         # Solver configuration
         # Get ops to update moving_mean and moving_variance from batch_norm
         # Reference: https://www.tensorflow.org/api_docs/python/tf/contrib/layers/batch_norm
@@ -66,7 +71,7 @@ class TrainModel(object):
             starter_learning_rate = learning_rate_init
             # decay every 10000 steps with a base of 0.96
             learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step,
-                                                       1000, 0.9, staircase=True)
+                                                       10000, 0.9, staircase=True)
 
             # Basically update the batch_norm moving averages before the training step
             # http://ruishu.io/2016/12/27/batchnorm/
@@ -111,12 +116,12 @@ class TrainModel(object):
                 train_step.run(feed_dict={model_in: xs_train, labels_in: ys_train, model_drop: 0.8})
 
                 # Display some information each x iterations
-                #if i % 10 == 0:
+                if i % 100 == 0:
                     # Get validation batch
-                    #xs, ys = data.LoadValBatch(batch_size)
+                    xs, ys = data.LoadValBatch(batch_size)
                     # Send validation batch to tensorflow graph (Dropout disabled)
-                    #loss_value = loss_val.eval(feed_dict={model_in: xs, labels_in: ys, model_drop: 1.0})
-                    #print("Epoch: %d, Step: %d, Loss(Val): %g" % (epoch, epoch * batch_size + i, loss_value))
+                    loss_value = loss_val.eval(feed_dict={model_in: xs, labels_in: ys, model_drop: 1.0})
+                    print("Epoch: %d, Step: %d, Loss(Val): %g" % (epoch, epoch * batch_size + i, loss_value))
 
                 # write logs at every iteration
                 summary = merged_summary_op.eval(feed_dict={model_in: xs_train, labels_in: ys_train, model_drop: 1.0})

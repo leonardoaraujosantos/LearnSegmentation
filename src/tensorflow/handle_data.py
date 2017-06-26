@@ -104,7 +104,8 @@ class HandleData:
             # Crop top, resize to 66x200 and divide by 255.0
             image = image / 255.0
             x_out.append(image)
-            y_out.append([self.__val_ys[(self.__val_batch_pointer + i) % self.__num_val_images]])
+            label = self.__train_ys[(self.__val_batch_pointer + i) % self.__num_val_images]
+            y_out.append(label)
             self.__val_batch_pointer += batch_size
         return x_out, y_out
 
@@ -184,7 +185,13 @@ class HandleData:
                 for key, value in cursor:
                     key_str = key.decode('ascii')
                     if 'label' in key_str:
-                        self.__val_ys.append(np.float32(np.asscalar(np.frombuffer(value, dtype=np.float32, count=1))))
+                        # Get shape information from key name
+                        info_key = key_str.split('_')
+                        # Get image shape [2:None] means from index 2 to the end
+                        shape_img = tuple(map(lambda x: int(x), info_key[2:None]))
+                        label_data = np.frombuffer(value, dtype=np.uint8).reshape(shape_img).astype(np.float32)
+                        label_data = np.expand_dims(label_data, axis=2)
+                        self.__val_ys.append(label_data)
                     else:
                         # Get shape information from key name
                         info_key = key_str.split('_')
