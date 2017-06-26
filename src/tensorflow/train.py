@@ -5,7 +5,7 @@ import os
 from handle_data import HandleData
 
 class TrainModel(object):
-    def __init__(self, gpu=0, logdir='./logs', savedir='./save', input='SegData', input_val=''):
+    def __init__(self, gpu=0, logdir='./logs', savedir='./save', input='SegData', input_val='', mem_frac=0.8):
 
         # Set enviroment variable to set the GPU to use
         if gpu != -1:
@@ -18,10 +18,11 @@ class TrainModel(object):
         self.__savedir = savedir
         self.__input = input
         self.__input_val = input_val
+        self.__memfrac = mem_frac
 
     def train(self, mode='fcn', epochs=600, learning_rate_init=0.001, checkpoint='', batch_size=30):
         # Avoid allocating the whole memory
-        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.6)
+        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=self.__memfrac)
         sess = tf.InteractiveSession(config=tf.ConfigProto(gpu_options=gpu_options))
         print('Train segmentation model:', mode)
 
@@ -104,15 +105,15 @@ class TrainModel(object):
         for epoch in range(epochs):
             for i in range(int(data.get_num_images() / batch_size)):
                 # Get training batch
-                xs_train, ys_train = data.LoadTrainBatch(batch_size, should_augment=True)
+                xs_train, ys_train = data.LoadTrainBatch(batch_size, should_augment=False)
 
                 # Send training batch to tensorflow graph (Dropout enabled)
                 train_step.run(feed_dict={model_in: xs_train, labels_in: ys_train, model_drop: 0.8})
 
                 # Display some information each x iterations
-                if i % 10 == 0:
+                #if i % 10 == 0:
                     # Get validation batch
-                    xs, ys = data.LoadValBatch(batch_size)
+                    #xs, ys = data.LoadValBatch(batch_size)
                     # Send validation batch to tensorflow graph (Dropout disabled)
                     #loss_value = loss_val.eval(feed_dict={model_in: xs, labels_in: ys, model_drop: 1.0})
                     #print("Epoch: %d, Step: %d, Loss(Val): %g" % (epoch, epoch * batch_size + i, loss_value))
