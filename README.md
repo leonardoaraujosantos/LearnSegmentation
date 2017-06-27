@@ -1,4 +1,7 @@
 # Semantic Segmentation
+Semantic Segmentation it's basically about segmenting images based on the object types that composes the image.
+
+### What I plan to do
 Implement most common semantic segmentation algorithms. 
 * FCN
 * Deconvet
@@ -21,6 +24,13 @@ Segmentation](https://arxiv.org/pdf/1511.00561.pdf)
 Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 * [Playing for Data: Ground Truth from Computer Games](https://arxiv.org/pdf/1608.02192.pdf)
 
+### Training
+First create your dataset, using the provided notebooks at __./src/notebook__, I will add one example for the most common datasets. Then to actually start your training use:
+
+```bash
+python train.py train --input=/dataset_lmdb --gpu=0 --mem_frac=0.8 --learning_rate_init=0.001
+```
+
 ### Frameworks used
 * [Tensorflow 1.2](https://www.tensorflow.org/)
 * [Pytorch](http://pytorch.org/)
@@ -40,6 +50,8 @@ Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 * [Fully Convolutional Networks for Semantic Segmentation talk](http://techtalks.tv/talks/fully-convolutional-networks-for-semantic-segmentation/61606/)
 * [Python Fire](https://github.com/google/python-fire/blob/master/doc/guide.md)
 * [Conditional Random Field](https://en.wikipedia.org/wiki/Conditional_random_field)
+* [Conditional Random Field Presentation](http://www.robots.ox.ac.uk/~davidc/pubs/crfs_jan2015.pdf)
+* [Deep Convolutional Neural Fields for Depth Estimation from a Single Image](http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Liu_Deep_Convolutional_Neural_2015_CVPR_paper.pdf)
 
 ### Reference Projects
 * [FCN on tensorflow](https://github.com/shekkizh/FCN.tensorflow)
@@ -48,3 +60,12 @@ Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 * [Deconvnet Tensorflow](https://github.com/fabianbormann/Tensorflow-DeconvNet-Segmentation)
 * [FCN, Segnet, UNet on Pytorch](https://github.com/bodokaiser/piwise)
 * [Pytorch for Semantic Segmentation](https://github.com/ycszen/pytorch-ss)
+* [Caffe original Segnet](https://github.com/alexgkendall/caffe-segnet)
+* [Caffe original FCN](https://github.com/shelhamer/fcn.berkeleyvision.org)
+* [FCN on tensorflow 2](https://github.com/xiaofanglegoc/tensorflow-fcn)
+* [FCN on tensorflow 3](https://github.com/MarvinTeichmann/tensorflow-fcn)
+* [Lung Cancer Segmentation](https://github.com/topcoderinc/Harvard-HMS-LC-MM1-Public)
+* [Blog explanation](http://warmspringwinds.github.io/tensorflow/tf-slim/2017/01/23/fully-convolutional-networks-(fcns)-for-image-segmentation/)
+
+### Some other references
+* [Display custom images on Tensorboard](https://stackoverflow.com/questions/38543850/tensorflow-how-to-display-custom-images-in-tensorboard-e-g-matplotlib-plots)
