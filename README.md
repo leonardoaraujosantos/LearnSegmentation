@@ -1,4 +1,7 @@
 # Semantic Segmentation
+Semantic Segmentation it's basically about segmenting images based on the object types that composes the image.
+
+### What I plan to do
 Implement most common semantic segmentation algorithms. 
 * FCN
 * Deconvet
@@ -50,6 +53,8 @@ Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 * [Deconvnet Tensorflow](https://github.com/fabianbormann/Tensorflow-DeconvNet-Segmentation)
 * [FCN, Segnet, UNet on Pytorch](https://github.com/bodokaiser/piwise)
 * [Pytorch for Semantic Segmentation](https://github.com/ycszen/pytorch-ss)
+* [Caffe original Segnet](https://github.com/alexgkendall/caffe-segnet)
+* [Caffe original FCN](https://github.com/shelhamer/fcn.berkeleyvision.org)
 
 ### Some other references
 * [Display custom images on Tensorboard](https://stackoverflow.com/questions/38543850/tensorflow-how-to-display-custom-images-in-tensorboard-e-g-matplotlib-plots)
