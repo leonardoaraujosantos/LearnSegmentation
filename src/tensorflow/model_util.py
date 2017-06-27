@@ -81,7 +81,7 @@ def conv2d(x, k_h, k_w, channels_in, channels_out, stride, name="conv", viewWeig
 
         # Visualize weights if needed
         if viewWeights == True:
-            tf.summary.image("W_grid", put_kernels_on_grid(w, 3, 8), 1)
+            tf.summary.image("W_grid", put_kernels_on_grid(w, 8, 8), 1)
 
         return activation
 

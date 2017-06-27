@@ -41,7 +41,6 @@ class TrainModel(object):
         model_out = segmentation_model.output
         labels_in = segmentation_model.label_in
         anotation_prediction = segmentation_model.anotation_prediction
-        model_drop = segmentation_model.dropout_control
 
         # Add input image on summary
         tf.summary.image("input_image", model_in, 2)
@@ -56,7 +55,7 @@ class TrainModel(object):
         # Segmentation problems often uses this "spatial" softmax (Basically we want to classify each pixel)
         with tf.name_scope("SPATIAL_SOFTMAX"):
             loss = tf.reduce_mean((tf.nn.sparse_softmax_cross_entropy_with_logits(
-                logits=model_out,labels=tf.squeeze(labels_in,squeeze_dims=[3]),name="spatial_softmax")))
+                logits=model_out,labels=tf.squeeze(labels_in, squeeze_dims=[3]),name="spatial_softmax")))
 
         # Add model accuracy
         with tf.name_scope("Loss_Validation"):
@@ -72,7 +71,7 @@ class TrainModel(object):
             starter_learning_rate = learning_rate_init
             # decay every 10000 steps with a base of 0.96
             learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step,
-                                                       10000, 0.9, staircase=True)
+                                                       10000, 0.1, staircase=True)
 
             # Basically update the batch_norm moving averages before the training step
             # http://ruishu.io/2016/12/27/batchnorm/
@@ -114,18 +113,18 @@ class TrainModel(object):
                 xs_train, ys_train = data.LoadTrainBatch(batch_size, should_augment=False)
 
                 # Send training batch to tensorflow graph (Dropout enabled)
-                train_step.run(feed_dict={model_in: xs_train, labels_in: ys_train, model_drop: 0.8})
+                train_step.run(feed_dict={model_in: xs_train, labels_in: ys_train})
 
                 # Display some information each x iterations
                 if i % 100 == 0:
                     # Get validation batch
                     xs, ys = data.LoadValBatch(batch_size)
                     # Send validation batch to tensorflow graph (Dropout disabled)
-                    loss_value = loss_val.eval(feed_dict={model_in: xs, labels_in: ys, model_drop: 1.0})
+                    loss_value = loss_val.eval(feed_dict={model_in: xs, labels_in: ys})
                     print("Epoch: %d, Step: %d, Loss(Val): %g" % (epoch, epoch * batch_size + i, loss_value))
 
                 # write logs at every iteration
-                summary = merged_summary_op.eval(feed_dict={model_in: xs_train, labels_in: ys_train, model_drop: 1.0})
+                summary = merged_summary_op.eval(feed_dict={model_in: xs_train, labels_in: ys_train})
                 summary_writer.add_summary(summary, epoch * batch_size + i)
 
             # Save checkpoint after each epoch
