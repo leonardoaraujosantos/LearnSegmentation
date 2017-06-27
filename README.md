@@ -50,3 +50,6 @@ Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 * [Deconvnet Tensorflow](https://github.com/fabianbormann/Tensorflow-DeconvNet-Segmentation)
 * [FCN, Segnet, UNet on Pytorch](https://github.com/bodokaiser/piwise)
 * [Pytorch for Semantic Segmentation](https://github.com/ycszen/pytorch-ss)
+
+### Some other references
+* [Display custom images on Tensorboard](https://stackoverflow.com/questions/38543850/tensorflow-how-to-display-custom-images-in-tensorboard-e-g-matplotlib-plots)
