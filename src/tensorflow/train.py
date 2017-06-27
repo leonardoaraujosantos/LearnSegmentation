@@ -71,7 +71,7 @@ class TrainModel(object):
             starter_learning_rate = learning_rate_init
             # decay every 10000 steps with a base of 0.96
             learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step,
-                                                       10000, 0.9, staircase=True)
+                                                       10000, 0.1, staircase=True)
 
             # Basically update the batch_norm moving averages before the training step
             # http://ruishu.io/2016/12/27/batchnorm/
