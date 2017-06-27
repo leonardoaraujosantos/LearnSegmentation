@@ -40,6 +40,8 @@ Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 * [Fully Convolutional Networks for Semantic Segmentation talk](http://techtalks.tv/talks/fully-convolutional-networks-for-semantic-segmentation/61606/)
 * [Python Fire](https://github.com/google/python-fire/blob/master/doc/guide.md)
 * [Conditional Random Field](https://en.wikipedia.org/wiki/Conditional_random_field)
+* [Conditional Random Field Presentation](http://www.robots.ox.ac.uk/~davidc/pubs/crfs_jan2015.pdf)
+* [Deep Convolutional Neural Fields for Depth Estimation from a Single Image](http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Liu_Deep_Convolutional_Neural_2015_CVPR_paper.pdf)
 
 ### Reference Projects
 * [FCN on tensorflow](https://github.com/shekkizh/FCN.tensorflow)
