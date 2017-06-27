@@ -11,7 +11,7 @@ The idea is to give a clean code as reference, and have fun implementing those p
 
 ### Example
 ![](docs/imgs/SemanticSegmentation.png)
-#### After 6h of training (cherrypicked result epoch 32)
+#### After 24h of training (Example from internet)
 ![](docs/imgs/Result2Days.png)
 
 ### Reference Papers
