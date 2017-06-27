@@ -8,6 +8,8 @@ The idea is to give a clean code as reference, and have fun implementing those p
 
 ### Example
 ![](docs/imgs/SemanticSegmentation.png)
+#### After 6h of training (cherrypicked result epoch 32)
+![](docs/imgs/SomeResults.png)
 
 ### Reference Papers
 * [Fully Convolutional Networks for Semantic Segmentation](https://arxiv.org/pdf/1411.4038.pdf)
