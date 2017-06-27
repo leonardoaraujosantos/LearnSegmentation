@@ -24,6 +24,9 @@ Segmentation](https://arxiv.org/pdf/1511.00561.pdf)
 Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 * [Playing for Data: Ground Truth from Computer Games](https://arxiv.org/pdf/1608.02192.pdf)
 
+### Testing
+Just download [this](https://drive.google.com/open?id=0B2RH2qnlKMlEeTBmQnQ2RHVOaEU) checkpoint and change on the [testing notebook](https://github.com/leonardoaraujosantos/LearnSegmentation/blob/master/src/notebooks/Tensorflow_Segmentation.ipynb) the checkpoint path.
+
 ### Training
 First create your dataset, using the provided notebooks at __./src/notebook__, I will add one example for the most common datasets. Then to actually start your training use:
 
