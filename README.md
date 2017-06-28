@@ -73,6 +73,7 @@ python train.py train --input=/dataset_lmdb --gpu=0 --mem_frac=0.8 --learning_ra
 * [Conditional Random Field](https://en.wikipedia.org/wiki/Conditional_random_field)
 * [Conditional Random Field Presentation](http://www.robots.ox.ac.uk/~davidc/pubs/crfs_jan2015.pdf)
 * [Deep Convolutional Neural Fields for Depth Estimation from a Single Image](http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Liu_Deep_Convolutional_Neural_2015_CVPR_paper.pdf)
+* [Computer Vision blog](http://www.computervisionblog.com/2016/06/)
 
 ### Reference Projects
 * [FCN on tensorflow](https://github.com/shekkizh/FCN.tensorflow)
