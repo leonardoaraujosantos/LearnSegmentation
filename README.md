@@ -9,9 +9,7 @@ Implement most common semantic segmentation algorithms.
 
 The idea is to give a clean code as reference, and have fun implementing those papers.
 
-### Example
-![](docs/imgs/SemanticSegmentation.png)
-#### After 24h of training (Example from internet)
+### Example (24h training and testing with some Internet example)
 ![](docs/imgs/Result2Days.png)
 
 ### Reference Papers
@@ -25,8 +23,11 @@ Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 * [Playing for Data: Ground Truth from Computer Games](https://arxiv.org/pdf/1608.02192.pdf)
 
 ### Spatial Loss
-Basically is a softmax that runs on each pixel of your output tensor
+Basically is a Spatial Multinomial Cross-Entropy that runs on each pixel of your output tensor, comparing with your label image.
+
 ![](docs/imgs/SpatialLoss.gif)
+
+#### On Tensorflow
 ```python
 with tf.name_scope("SPATIAL_SOFTMAX"):
   loss = tf.reduce_mean((tf.nn.sparse_softmax_cross_entropy_with_logits(
