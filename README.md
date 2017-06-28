@@ -22,6 +22,10 @@ Segmentation](https://arxiv.org/pdf/1511.00561.pdf)
 Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 * [Playing for Data: Ground Truth from Computer Games](https://arxiv.org/pdf/1608.02192.pdf)
 
+### Block Diagram
+
+![](docs/imgs/SegmentationBlockDiagram.png)
+
 ### Spatial Loss
 Basically is a Spatial Multinomial Cross-Entropy that runs on each pixel of your output tensor, comparing with your label image.
 
