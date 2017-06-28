@@ -24,6 +24,15 @@ Segmentation](https://arxiv.org/pdf/1511.00561.pdf)
 Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 * [Playing for Data: Ground Truth from Computer Games](https://arxiv.org/pdf/1608.02192.pdf)
 
+### Spatial Loss
+Basically is a softmax that runs on each pixel of your output tensor
+![](docs/imgs/SpatialLoss.gif)
+```python
+with tf.name_scope("SPATIAL_SOFTMAX"):
+  loss = tf.reduce_mean((tf.nn.sparse_softmax_cross_entropy_with_logits(
+    logits=model_out,labels=tf.squeeze(labels_in, squeeze_dims=[3]),name="spatial_softmax")))
+```
+
 ### Improving results
 One technique to improve the "bublish" effect from the segmentation network is to use Conditional Random Fields as a post-processing stage, which refines our segmentation by taking into account pure RGB features of image and probabilities produced by our network.
 ![](docs/imgs/ImprovePerf.png)
