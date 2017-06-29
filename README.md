@@ -23,7 +23,16 @@ Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 * [Playing for Data: Ground Truth from Computer Games](https://arxiv.org/pdf/1608.02192.pdf)
 
 ### Block Diagram
+#### Basic Convolutional Autoencoder Architecture
+![](docs/imgs/DeconvnetArch.png)
 
+#### Segnet
+![](docs/imgs/segnet.png)
+
+#### Deconvnet
+![](docs/imgs/DeconvNet.png)
+
+#### Basic "Segnet/Deconvolution" Segmentation Architecture
 ![](docs/imgs/SegmentationBlockDiagram.png)
 
 ### Spatial Loss
