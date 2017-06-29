@@ -22,6 +22,10 @@ Segmentation](https://arxiv.org/pdf/1511.00561.pdf)
 Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 * [Playing for Data: Ground Truth from Computer Games](https://arxiv.org/pdf/1608.02192.pdf)
 
+### Block Diagram
+
+![](docs/imgs/SegmentationBlockDiagram.png)
+
 ### Spatial Loss
 Basically is a Spatial Multinomial Cross-Entropy that runs on each pixel of your output tensor, comparing with your label image.
 
@@ -69,6 +73,7 @@ python train.py train --input=/dataset_lmdb --gpu=0 --mem_frac=0.8 --learning_ra
 * [Conditional Random Field](https://en.wikipedia.org/wiki/Conditional_random_field)
 * [Conditional Random Field Presentation](http://www.robots.ox.ac.uk/~davidc/pubs/crfs_jan2015.pdf)
 * [Deep Convolutional Neural Fields for Depth Estimation from a Single Image](http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Liu_Deep_Convolutional_Neural_2015_CVPR_paper.pdf)
+* [Computer Vision blog](http://www.computervisionblog.com/2016/06/)
 
 ### Reference Projects
 * [FCN on tensorflow](https://github.com/shekkizh/FCN.tensorflow)
