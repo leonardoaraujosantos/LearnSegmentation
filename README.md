@@ -32,6 +32,10 @@ Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 #### Deconvnet
 ![](docs/imgs/DeconvNet.png)
 
+### Upsample(Unpool) + CONV
+On some papers (Segnet, Deconvnet, FCN) you will observe that each "Upsample layer" is composed of UNPOOL+CONV.
+![](docs/imgs/UnpoolDeconvResults.png)
+
 #### Basic "Segnet/Deconvolution" Segmentation Architecture
 ![](docs/imgs/SegmentationBlockDiagram.png)
 
