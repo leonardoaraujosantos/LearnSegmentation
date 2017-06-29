@@ -9,10 +9,8 @@ Implement most common semantic segmentation algorithms.
 
 The idea is to give a clean code as reference, and have fun implementing those papers.
 
-### Example
-![](docs/imgs/SemanticSegmentation.png)
-#### After 6h of training (cherrypicked result epoch 32)
-![](docs/imgs/SomeResults.png)
+### Example (24h training and testing with some Internet example)
+![](docs/imgs/Result2Days.png)
 
 ### Reference Papers
 * [Fully Convolutional Networks for Semantic Segmentation](https://arxiv.org/pdf/1411.4038.pdf)
@@ -23,6 +21,42 @@ Segmentation](https://arxiv.org/pdf/1511.00561.pdf)
 * [ENet: A Deep Neural Network Architecture for
 Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 * [Playing for Data: Ground Truth from Computer Games](https://arxiv.org/pdf/1608.02192.pdf)
+
+### Block Diagram
+#### Basic Convolutional Autoencoder Architecture
+![](docs/imgs/DeconvnetArch.png)
+
+#### Segnet
+![](docs/imgs/segnet.png)
+
+#### Deconvnet
+![](docs/imgs/DeconvNet.png)
+
+### Upsample(Unpool) + CONV
+On some papers (Segnet, Deconvnet, FCN) you will observe that each "Upsample layer" is composed of UNPOOL+CONV.
+![](docs/imgs/UnpoolDeconvResults.png)
+
+#### Basic "Segnet/Deconvolution" Segmentation Architecture
+![](docs/imgs/SegmentationBlockDiagram.png)
+
+### Spatial Loss
+Basically is a Spatial Multinomial Cross-Entropy that runs on each pixel of your output tensor, comparing with your label image.
+
+![](docs/imgs/SpatialLoss.gif)
+
+#### On Tensorflow
+```python
+with tf.name_scope("SPATIAL_SOFTMAX"):
+  loss = tf.reduce_mean((tf.nn.sparse_softmax_cross_entropy_with_logits(
+    logits=model_out,labels=tf.squeeze(labels_in, squeeze_dims=[3]),name="spatial_softmax")))
+```
+
+### Improving results
+One technique to improve the "bublish" effect from the segmentation network is to use Conditional Random Fields as a post-processing stage, which refines our segmentation by taking into account pure RGB features of image and probabilities produced by our network.
+![](docs/imgs/ImprovePerf.png)
+
+### Testing
+Just download [this checkpoint compressed file](https://drive.google.com/open?id=0B2RH2qnlKMlEeTBmQnQ2RHVOaEU), extract somewhere and change on the [testing notebook](https://github.com/leonardoaraujosantos/LearnSegmentation/blob/master/src/notebooks/Tensorflow_Segmentation.ipynb) the checkpoint path.
 
 ### Training
 First create your dataset, using the provided notebooks at __./src/notebook__, I will add one example for the most common datasets. Then to actually start your training use:
@@ -52,6 +86,7 @@ python train.py train --input=/dataset_lmdb --gpu=0 --mem_frac=0.8 --learning_ra
 * [Conditional Random Field](https://en.wikipedia.org/wiki/Conditional_random_field)
 * [Conditional Random Field Presentation](http://www.robots.ox.ac.uk/~davidc/pubs/crfs_jan2015.pdf)
 * [Deep Convolutional Neural Fields for Depth Estimation from a Single Image](http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Liu_Deep_Convolutional_Neural_2015_CVPR_paper.pdf)
+* [Computer Vision blog](http://www.computervisionblog.com/2016/06/)
 
 ### Reference Projects
 * [FCN on tensorflow](https://github.com/shekkizh/FCN.tensorflow)
@@ -66,6 +101,8 @@ python train.py train --input=/dataset_lmdb --gpu=0 --mem_frac=0.8 --learning_ra
 * [FCN on tensorflow 3](https://github.com/MarvinTeichmann/tensorflow-fcn)
 * [Lung Cancer Segmentation](https://github.com/topcoderinc/Harvard-HMS-LC-MM1-Public)
 * [Blog explanation](http://warmspringwinds.github.io/tensorflow/tf-slim/2017/01/23/fully-convolutional-networks-(fcns)-for-image-segmentation/)
+* [Segmentation Hangout](https://github.com/handong1587/handong1587.github.io/blob/master/_posts/deep_learning/2015-10-09-segmentation.md)
+* [Image Segmentation and CRF Notebook](https://github.com/warmspringwinds/tensorflow_notes/blob/master/image_segmentation_conditional_random_fields.ipynb)
 
 ### Some other references
 * [Display custom images on Tensorboard](https://stackoverflow.com/questions/38543850/tensorflow-how-to-display-custom-images-in-tensorboard-e-g-matplotlib-plots)
