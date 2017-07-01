@@ -20,10 +20,14 @@ class TrainModel(object):
         self.__input_val = input_val
         self.__memfrac = mem_frac
 
-    def train(self, mode='fcn', epochs=600, learning_rate_init=0.001, checkpoint='', batch_size=50):
+    def train(self, mode='fcn', epochs=600, learning_rate_init=0.001, checkpoint='', batch_size=50, l2_reg=0.0001):
         # Avoid allocating the whole memory
         gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=self.__memfrac)
         sess = tf.InteractiveSession(config=tf.ConfigProto(gpu_options=gpu_options))
+
+        # Regularization value
+        L2NormConst = l2_reg
+
         print('Train segmentation model:', mode)
 
         # Build model
@@ -55,7 +59,8 @@ class TrainModel(object):
         # Segmentation problems often uses this "spatial" softmax (Basically we want to classify each pixel)
         with tf.name_scope("SPATIAL_SOFTMAX"):
             loss = tf.reduce_mean((tf.nn.sparse_softmax_cross_entropy_with_logits(
-                logits=model_out,labels=tf.squeeze(labels_in, squeeze_dims=[3]),name="spatial_softmax")))
+                logits=model_out,labels=tf.squeeze(labels_in, squeeze_dims=[3]),name="spatial_softmax"))) + tf.add_n(
+            [tf.nn.l2_loss(v) for v in train_vars]) * L2NormConst
 
         # Add model accuracy
         with tf.name_scope("Loss_Validation"):

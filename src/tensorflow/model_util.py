@@ -208,6 +208,7 @@ def bound_layer(val_in, bound_val, name="bound_scale"):
 def gate_tensor(tensor_in, name="gate"):
     with tf.name_scope(name):
         mu = tf.Variable(tf.random_normal([1], stddev=0.35),name="modulate")
+        tf.summary.scalar("plot_gate_"+name, tf.reshape(mu,[]))
         return tf.multiply(tf.sigmoid(mu), tensor_in)
 
 
