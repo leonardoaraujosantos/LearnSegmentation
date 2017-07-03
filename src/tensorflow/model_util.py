@@ -233,3 +233,29 @@ def huber_loss(labels, predidction, delta=1.0):
 
         # Decide between L2 and absolute error
         return tf.where(condition, small_res, large_res)
+
+
+# Do augmentation (flip) on the graph
+# Some references:
+# https://stackoverflow.com/questions/38920240/tensorflow-image-operations-for-batches
+# https://stackoverflow.com/questions/39574999/tensorflow-tf-image-functions-on-an-image-batch
+# https://www.tensorflow.org/api_docs/python/tf/map_fn
+def augment_op(image_tensor, label_img_tensor):
+    with tf.name_scope('augmentation'):
+        def flip_image():
+            # Map the flip_left_right to each image on your batch
+            distorted_image = tf.map_fn(lambda img: tf.image.flip_left_right(img), image_tensor)
+            distorted_label = tf.map_fn(lambda img: tf.image.flip_left_right(img), label_img_tensor)
+            return distorted_image, distorted_label
+
+        def no_flip_image():
+            distorted_image = image_tensor
+            distorted_label = label_img_tensor
+            return distorted_image, distorted_label
+
+        # Uniform variable in [0,1)
+        flip_coin_flip = tf.random_uniform(shape=[], minval=0., maxval=1., dtype=tf.float32)
+        pred_flip = tf.less(flip_coin_flip, 0.5)
+        # Randomically select doing color augmentation
+        imgs, labels = tf.cond(pred_flip, flip_image, no_flip_image, name='if_horz_flip')
+        return imgs, labels

@@ -32,13 +32,13 @@ class TrainModel(object):
 
         # Build model
         if mode.lower() == 'segnet':
-            segmentation_model = models.SegnetNoConnected()
+            segmentation_model = models.SegnetNoConnected(do_augment = True)
         elif mode.lower() == 'segnet_connected':
-            segmentation_model = models.SegnetConnected()
+            segmentation_model = models.SegnetConnected(do_augment = True)
         elif mode.lower() == 'segnet_connected_gate':
-            segmentation_model = models.SegnetConnectedGate()
+            segmentation_model = models.SegnetConnectedGate(do_augment = True)
         else:
-            segmentation_model = models.FullyConvolutionalNetworks()
+            segmentation_model = models.FullyConvolutionalNetworks(do_augment = True)
 
         # Get Placeholders
         model_in = segmentation_model.input
