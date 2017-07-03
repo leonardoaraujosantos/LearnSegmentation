@@ -3,14 +3,11 @@ import model_util as util
 
 
 class SegnetNoConnected(object):
-    def __init__(self, input=None, use_placeholder=True, training_mode=True, img_size = 224, num_classes=151, do_augment = False):
+    def __init__(self, input=None, use_placeholder=True, training_mode=True, img_size = 224, num_classes=151):
         self.__x = tf.placeholder(tf.float32, shape=[None, img_size, img_size, 3], name='IMAGE_IN')
         self.__label = tf.placeholder(tf.int32, shape=[None, img_size, img_size, 1], name='LABEL_IN')
         self.__use_placeholder = use_placeholder
 
-        # Add op for augmentation
-        if do_augment:
-            self.__x,self.__label = util.augment_op(self.__x, self.__label)
 
         ##### ENCODER
         # Calculating the convolution output:
@@ -133,14 +130,11 @@ class SegnetNoConnected(object):
 
 
 class SegnetConnected(object):
-    def __init__(self, input=None, use_placeholder=True, training_mode=True, img_size = 224, num_classes=151, do_augment = False):
+    def __init__(self, input=None, use_placeholder=True, training_mode=True, img_size = 224, num_classes=151):
         self.__x = tf.placeholder(tf.float32, shape=[None, img_size, img_size, 3], name='IMAGE_IN')
         self.__label = tf.placeholder(tf.int32, shape=[None, img_size, img_size, 1], name='LABEL_IN')
         self.__use_placeholder = use_placeholder
 
-        # Add op for augmentation
-        if do_augment:
-            self.__x, self.__label = util.augment_op(self.__x, self.__label)
 
         ##### ENCODER
         # Calculating the convolution output:
@@ -263,14 +257,10 @@ class SegnetConnected(object):
 
 
 class SegnetConnectedGate(object):
-    def __init__(self, input=None, use_placeholder=True, training_mode=True, img_size = 224, num_classes=151, do_augment = False):
+    def __init__(self, input=None, use_placeholder=True, training_mode=True, img_size = 224, num_classes=151):
         self.__x = tf.placeholder(tf.float32, shape=[None, img_size, img_size, 3], name='IMAGE_IN')
         self.__label = tf.placeholder(tf.int32, shape=[None, img_size, img_size, 1], name='LABEL_IN')
         self.__use_placeholder = use_placeholder
-
-        # Add op for augmentation
-        if do_augment:
-            self.__x, self.__label = util.augment_op(self.__x, self.__label)
 
         ##### ENCODER
         # Calculating the convolution output:

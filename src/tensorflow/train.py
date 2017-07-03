@@ -32,13 +32,13 @@ class TrainModel(object):
 
         # Build model
         if mode.lower() == 'segnet':
-            segmentation_model = models.SegnetNoConnected(do_augment = True)
+            segmentation_model = models.SegnetNoConnected()
         elif mode.lower() == 'segnet_connected':
-            segmentation_model = models.SegnetConnected(do_augment = True)
+            segmentation_model = models.SegnetConnected()
         elif mode.lower() == 'segnet_connected_gate':
-            segmentation_model = models.SegnetConnectedGate(do_augment = True)
+            segmentation_model = models.SegnetConnectedGate()
         else:
-            segmentation_model = models.FullyConvolutionalNetworks(do_augment = True)
+            segmentation_model = models.FullyConvolutionalNetworks()
 
         # Get Placeholders
         model_in = segmentation_model.input
@@ -115,7 +115,7 @@ class TrainModel(object):
         for epoch in range(epochs):
             for i in range(int(data.get_num_images() / batch_size)):
                 # Get training batch
-                xs_train, ys_train = data.LoadTrainBatch(batch_size, should_augment=False)
+                xs_train, ys_train = data.LoadTrainBatch(batch_size, should_augment=True)
 
                 # Send training batch to tensorflow graph (Dropout enabled)
                 train_step.run(feed_dict={model_in: xs_train, labels_in: ys_train})
