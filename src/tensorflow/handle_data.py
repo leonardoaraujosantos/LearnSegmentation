@@ -4,7 +4,7 @@ import h5py
 import lmdb
 import numpy as np
 import tensorflow as tf
-from augment_batch import AugmentDrivingBatch
+from augment_batch import AugmentBatch
 
 class HandleData:
     __xs = []
@@ -33,7 +33,7 @@ class HandleData:
     __val_batch_pointer = 0
 
     def __init__(self, path='DrivingData.h5', path_val='', train_perc=0.8, val_perc=0.2, shuffle=True):
-        self.__augment = AugmentDrivingBatch()
+        self.__augment = AugmentBatch()
         self.__train_perc = train_perc
         self.__val_perc = val_perc
         print("Loading training data")
