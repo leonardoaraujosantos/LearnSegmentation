@@ -40,6 +40,12 @@ class HandleData:
         # Handle HDF5/LMDB datasets (Load content to memory)
         self.handle_file_dataset(path,path_val,train_perc,val_perc,shuffle)
 
+        # Allow split only if val_perc different than zero or
+        if val_perc == 0 and path_val == '':
+            self.__split_training = False
+        else:
+            self.__split_training = True
+
         # Get number of images
         self.__num_train_images = len(self.__train_xs)
         self.__num_val_images = len(self.__val_xs)

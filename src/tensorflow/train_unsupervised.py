@@ -20,7 +20,7 @@ class TrainModel(object):
         self.__input_val = input_val
         self.__memfrac = mem_frac
 
-    def train(self, mode='fcn', epochs=600, learning_rate_init=0.001, checkpoint='', batch_size=50, l2_reg=0.0001):
+    def train(self, epochs=600, learning_rate_init=0.001, checkpoint='', batch_size=50, l2_reg=0.0001):
         # Avoid allocating the whole memory
         gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=self.__memfrac)
         sess = tf.InteractiveSession(config=tf.ConfigProto(gpu_options=gpu_options))
@@ -28,44 +28,27 @@ class TrainModel(object):
         # Regularization value
         L2NormConst = l2_reg
 
-        print('Train segmentation model:', mode)
+
 
         # Build model
-        if mode.lower() == 'segnet':
-            segmentation_model = models.SegnetNoConnected()
-        elif mode.lower() == 'segnet_connected':
-            segmentation_model = models.SegnetConnected()
-        elif mode.lower() == 'segnet_connected_gate':
-            segmentation_model = models.SegnetConnectedGate()
-        else:
-            segmentation_model = models.FullyConvolutionalNetworks()
+        segmentation_model = models.AutoEncoderSegnet()
 
         # Get Placeholders
         model_in = segmentation_model.input
         model_out = segmentation_model.output
-        labels_in = segmentation_model.label_in
-        anotation_prediction = segmentation_model.anotation_prediction
 
         # Add input image on summary
-        tf.summary.image("input_image", model_in, 2)
-        tf.summary.image("ground_truth", tf.cast(labels_in, tf.uint8), max_outputs=2)
-        # Expand dimension before asking a sumary
-        tf.summary.image("pred_annotation", tf.cast(tf.expand_dims(anotation_prediction, dim=3), tf.uint8), max_outputs=2)
+        tf.summary.image("input_image", model_in, 5)
+        tf.summary.image("output_image", model_out, 5)
+
 
         # Get all model "parameters" that are trainable
         train_vars = tf.trainable_variables()
 
-        # Add loss
-        # Segmentation problems often uses this "spatial" softmax (Basically we want to classify each pixel)
-        with tf.name_scope("SPATIAL_SOFTMAX"):
-            loss = tf.reduce_mean((tf.nn.sparse_softmax_cross_entropy_with_logits(
-                logits=model_out,labels=tf.squeeze(labels_in, squeeze_dims=[3]),name="spatial_softmax"))) + tf.add_n(
-            [tf.nn.l2_loss(v) for v in train_vars]) * L2NormConst
+        # Add loss (Should be a generative model here....)
+        with tf.name_scope("L2_LOSS"):
+            loss = loss = tf.nn.l2_loss(model_in-model_out)
 
-        # Add model accuracy
-        with tf.name_scope("Loss_Validation"):
-            loss_val = tf.reduce_mean((tf.nn.sparse_softmax_cross_entropy_with_logits(
-                logits=model_out, labels=tf.squeeze(labels_in, squeeze_dims=[3]), name="spatial_softmax")))
 
         # Solver configuration
         # Get ops to update moving_mean and moving_variance from batch_norm
@@ -99,7 +82,6 @@ class TrainModel(object):
 
         # Monitor loss, learning_rate, global_step, etc...
         tf.summary.scalar("loss_train", loss)
-        tf.summary.scalar("loss_val", loss_val)
         tf.summary.scalar("learning_rate", learning_rate)
         tf.summary.scalar("global_step", global_step)
         # merge all summaries into a single op
@@ -108,7 +90,7 @@ class TrainModel(object):
         # Configure where to save the logs for tensorboard
         summary_writer = tf.summary.FileWriter(self.__logdir, graph=tf.get_default_graph())
 
-        data = HandleData(path=self.__input, path_val=self.__input_val)
+        data = HandleData(path=self.__input, path_val=self.__input_val, val_perc=0)
         num_images_epoch = int(data.get_num_images() / batch_size)
         print('Num samples', data.get_num_images(), 'Iterations per epoch:', num_images_epoch, 'batch size:',batch_size)
 
@@ -119,18 +101,10 @@ class TrainModel(object):
                 xs_train, ys_train = data.LoadTrainBatch(batch_size, should_augment=True)
 
                 # Send training batch to tensorflow graph (Dropout enabled)
-                train_step.run(feed_dict={model_in: xs_train, labels_in: ys_train})
-
-                # Display some information each x iterations
-                if i % 100 == 0:
-                    # Get validation batch
-                    xs, ys = data.LoadValBatch(batch_size)
-                    # Send validation batch to tensorflow graph (Dropout disabled)
-                    loss_value = loss_val.eval(feed_dict={model_in: xs, labels_in: ys})
-                    print("Epoch: %d, Step: %d, Loss(Val): %g" % (epoch, epoch * batch_size + i, loss_value))
+                train_step.run(feed_dict={model_in: xs_train})
 
                 # write logs at every iteration
-                summary = merged_summary_op.eval(feed_dict={model_in: xs_train, labels_in: ys_train})
+                summary = merged_summary_op.eval(feed_dict={model_in: xs_train})
                 summary_writer.add_summary(summary, epoch * batch_size + i)
 
             # Save checkpoint after each epoch
