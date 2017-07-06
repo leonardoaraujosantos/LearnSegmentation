@@ -63,6 +63,7 @@ First create your dataset, using the provided notebooks at __./src/notebook__, I
 
 ```bash
 python train.py train --input=/dataset_lmdb --gpu=0 --mem_frac=0.8 --learning_rate_init=0.001
+python train_unsupervised.py train --input=/dataset_lmdb
 ```
 
 ### Frameworks used
