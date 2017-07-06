@@ -1,4 +1,5 @@
 import tensorflow as tf
+import numpy as np
 
 
 # References:
@@ -259,3 +260,8 @@ def augment_op(image_tensor, label_img_tensor):
         # Randomically select doing color augmentation
         imgs, labels = tf.cond(pred_flip, flip_image, no_flip_image, name='if_horz_flip')
         return imgs, labels
+
+
+# Caculate number of parameters
+def get_paremeter_size(train_variables):
+    return np.sum([np.product([xi.value for xi in x.get_shape()]) for x in train_variables])

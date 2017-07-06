@@ -1,5 +1,6 @@
 import fire
 import models
+import model_util as util
 import tensorflow as tf
 import os
 from handle_data import HandleData
@@ -36,6 +37,9 @@ class TrainModel(object):
         # Get Placeholders
         model_in = segmentation_model.input
         model_out = segmentation_model.output
+
+        # Get number of parameters
+        print('Number of parameters:', util.get_paremeter_size(tf.trainable_variables()))
 
         # Add input image on summary
         tf.summary.image("input_image", model_in, 5)

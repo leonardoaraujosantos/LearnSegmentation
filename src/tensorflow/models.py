@@ -424,39 +424,49 @@ class AutoEncoderSegnet(object):
         self.__conv4_act = util.relu(self.__conv4_bn, do_summary=False)
 
         # CONV5: Input 23x23x64 after CONV 3x3 P:0 S:1 H_out: 1 + (23-3)/1 = 21, W_out=  1 + (23-3)/1 = 21
-        self.__conv5 = util.conv2d(self.__conv4_act, 3, 3, 32, 16, 1, "conv5", do_summary=False)
+        self.__conv5 = util.conv2d(self.__conv4_act, 3, 3, 32, 32, 1, "conv5", do_summary=False)
         self.__conv5_bn = util.batch_norm(self.__conv5, training_mode, name='bn_c5')
         self.__conv5_act = util.relu(self.__conv5_bn, do_summary=False)
 
+        # CONV6: Input 21x21x32 after CONV 3x3 P:0 S:1 H_out: 1 + (21-3)/1 = 19, W_out=  1 + (21-3)/1 = 19
+        self.__conv6 = util.conv2d(self.__conv5_act, 3, 3, 32, 16, 1, "conv6", do_summary=False)
+        self.__conv6_bn = util.batch_norm(self.__conv6, training_mode, name='bn_c6')
+        self.__conv6_act = util.relu(self.__conv6_bn, do_summary=False)
+
         ##### DECODER (At this point we have 1x18x64
         # Kernel, output size, in_volume, out_volume, stride
-        self.__conv_t5_out = util.conv2d_transpose(self.__conv5_act, (3, 3), (23, 23), 16, 32, 1, name="dconv1",
+        self.__conv_t6_out = util.conv2d_transpose(self.__conv6_act, (3, 3), (21, 21), 16, 32, 1, name="dconv1",
+                                                   do_summary=False)
+        self.__conv_t6_out_bn = util.batch_norm(self.__conv_t6_out, training_mode, name='bn_t_c6')
+        self.__conv_t6_out_act = util.relu(self.__conv_t6_out, do_summary=False)
+
+        self.__conv_t5_out = util.conv2d_transpose(self.__conv_t6_out_act, (3, 3), (23, 23), 32, 32, 1, name="dconv2",
                                                    do_summary=False)
         self.__conv_t5_out_bn = util.batch_norm(self.__conv_t5_out, training_mode, name='bn_t_c5')
         self.__conv_t5_out_act = util.relu(self.__conv_t5_out_bn, do_summary=False)
 
         self.__conv_t4_out = util.conv2d_transpose(
             self.__conv_t5_out_act,
-            (3, 3), (25, 25), 32, 32, 1, name="dconv2",do_summary=False)
+            (3, 3), (25, 25), 32, 32, 1, name="dconv3",do_summary=False)
         self.__conv_t4_out_bn = util.batch_norm(self.__conv_t4_out, training_mode, name='bn_t_c4')
         self.__conv_t4_out_act = util.relu(self.__conv_t4_out_bn, do_summary=False)
 
         self.__conv_t3_out = util.conv2d_transpose(
             self.__conv_t4_out_act,
-            (5, 5), (53, 53), 32, 64, 2, name="dconv3",do_summary=False)
+            (5, 5), (53, 53), 32, 64, 2, name="dconv4",do_summary=False)
         self.__conv_t3_out_bn = util.batch_norm(self.__conv_t3_out, training_mode, name='bn_t_c3')
         self.__conv_t3_out_act = util.relu(self.__conv_t3_out_bn, do_summary=False)
 
         self.__conv_t2_out = util.conv2d_transpose(
             self.__conv_t3_out_act,
-            (5, 5), (110, 110), 64, 64, 2, name="dconv4",do_summary=False)
+            (5, 5), (110, 110), 64, 64, 2, name="dconv5",do_summary=False)
         self.__conv_t2_out_bn = util.batch_norm(self.__conv_t2_out, training_mode, name='bn_t_c2')
         self.__conv_t2_out_act = util.relu(self.__conv_t2_out_bn, do_summary=False)
 
         # Observe that the last deconv depth is the same as the number of classes
         self.__conv_t1_out = util.conv2d_transpose(
             self.__conv_t2_out_act,
-            (5, 5), (img_size, img_size), 64, 3, 2, name="dconv5",do_summary=False)
+            (5, 5), (img_size, img_size), 64, 3, 2, name="dconv6",do_summary=False)
         self.__conv_t1_out_bn = util.batch_norm(self.__conv_t1_out, training_mode, name='bn_t_c1')
 
         # Model output (It's not the segmentation yet...)
