@@ -263,5 +263,6 @@ def augment_op(image_tensor, label_img_tensor):
 
 
 # Caculate number of parameters
+# This will not return the number in bytes just the "number" of parameters
 def get_paremeter_size(train_variables):
     return np.sum([np.product([xi.value for xi in x.get_shape()]) for x in train_variables])
