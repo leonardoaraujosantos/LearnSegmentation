@@ -7,7 +7,7 @@ from random import shuffle
 import matplotlib.pyplot as plt
 import numpy as np
 
-class AugmentBatch:
+class AugmentDrivingBatch:
 
     def __init__(self):
         # Initialize seed
@@ -30,16 +30,6 @@ class AugmentBatch:
 
             # Flip steering independent of other augmentations (Idea is to have more steering actions on training)
             batch_fliped = self.flip_horizontal(new_batch)
-
-            # Do augmentations based on the lambda list __list_func
-            idx = 0
-            for (img, label) in batch_fliped:
-                # Choose one operation to be applied on each image of the batch
-                operation = randint(0, len(self.__list_func) - 1)
-                # Choose the operation randomically
-                img = self.__list_func[operation](img)
-                batch_fliped[idx] = (img, label)
-                idx += 1
 
             return batch_fliped
 

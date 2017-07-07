@@ -6,9 +6,7 @@ from handle_data import HandleData
 import model_util
 
 class TrainModel(object):
-    def __init__(self, gpu=0, logdir='./logsSC', savedir='./saveSC',
-                 input='/mnt/fs3/QA_analitics/Person_Re_Identification/git_repo/datasets/PPSS/PPSS_LMDB_train',
-                 input_val='/mnt/fs3/QA_analitics/Person_Re_Identification/git_repo/datasets/PPSS/PPSS_LMDB_validate', mem_frac=1):
+    def __init__(self, gpu=0, logdir='./logs', savedir='./save', input='SegData', input_val='', mem_frac=0.8):
 
         # Set enviroment variable to set the GPU to use
         if gpu != -1:
@@ -23,7 +21,7 @@ class TrainModel(object):
         self.__input_val = input_val
         self.__memfrac = mem_frac
 
-    def train(self, mode='segnet_connected', epochs=600, learning_rate_init=0.0001, checkpoint='', batch_size=10, l2_reg=0.0001):
+    def train(self, mode='fcn', epochs=600, learning_rate_init=0.001, checkpoint='', batch_size=50, l2_reg=0.0001):
         # Avoid allocating the whole memory
         gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=self.__memfrac)
         sess = tf.InteractiveSession(config=tf.ConfigProto(gpu_options=gpu_options))
@@ -57,9 +55,28 @@ class TrainModel(object):
         tf.summary.image("pred_annotation", tf.cast(tf.expand_dims(anotation_prediction, dim=3), tf.uint8),
                          max_outputs=2)
 
+        # Add input image on summary
+        tf.summary.image("input_image", model_in, 2)
+        tf.summary.image("ground_truth", tf.cast(labels_in, tf.uint8), max_outputs=2)
+        # Expand dimension before asking a sumary
+        tf.summary.image("pred_annotation", tf.cast(tf.expand_dims(anotation_prediction, dim=3), tf.uint8), max_outputs=2)
+
+
 
         # Get all model "parameters" that are trainable
         train_vars = tf.trainable_variables()
+
+        # select layers from the pretrained model
+        list_convs = [v for v in tf.global_variables()]
+        del list_convs[-1]
+        del list_convs[-1]
+        del list_convs[-1]
+        del list_convs[-1]
+        del list_convs[-1]
+        del list_convs[-1]
+
+        training_model_vars = tf.global_variables()
+
 
         # Add loss
         # Segmentation problems often uses this "spatial" softmax (Basically we want to classify each pixel)
@@ -82,7 +99,7 @@ class TrainModel(object):
             starter_learning_rate = learning_rate_init
             # decay every 10000 steps with a base of 0.96
             learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step,
-                                                       20000, 0.96, staircase=True)
+                                                       30000, 0.1, staircase=True)
 
             # Basically update the batch_norm moving averages before the training step
             # http://ruishu.io/2016/12/27/batchnorm/
@@ -94,11 +111,17 @@ class TrainModel(object):
 
         # Load checkpoint if needed
         if checkpoint != '':
+
             # Load tensorflow model
             print("Loading pre-trained model: %s" % checkpoint)
+            # Define the saver object to load only the conv variables
+            saver_load_net = tf.train.Saver(var_list=list_convs)
+            # Define saver object to save all the variables of the trining model graph
+            saver = tf.train.Saver(var_list=training_model_vars)
             # Create saver object to save/load training checkpoint
-            saver = tf.train.Saver(max_to_keep=None)
-            saver.restore(sess, checkpoint)
+            # saver = tf.train.Saver(max_to_keep=None)
+            saver_load_net.restore(sess, tf.train.latest_checkpoint(checkpoint))
+
         else:
             # Just create saver for saving checkpoints
             saver = tf.train.Saver(max_to_keep=None)
@@ -107,7 +130,6 @@ class TrainModel(object):
         tf.summary.scalar("loss_train", loss)
         tf.summary.scalar("learning_rate", learning_rate)
         tf.summary.scalar("global_step", global_step)
-        tf.summary.scalar("loos_val", loss_val)
         # merge all summaries into a single op
         merged_summary_op = tf.summary.merge_all()
 
@@ -130,27 +152,25 @@ class TrainModel(object):
                 # Display some information each x iterations
                 if i % 100 == 0:
                     # Get validation batch
-                    v_xs, v_ys = data.LoadValBatch(batch_size)
+                    xs, ys = data.LoadValBatch(batch_size)
                     # Send validation batch to tensorflow graph (Dropout disabled)
-                    loss_value = loss_val.eval(feed_dict={model_in: v_xs, labels_in: v_ys})
+                    loss_value = loss_val.eval(feed_dict={model_in: xs, labels_in: ys})
                     print("Epoch: %d, Step: %d, Loss(Val): %g" % (epoch, epoch * batch_size + i, loss_value))
 
                 # write logs at every iteration
                 summary = merged_summary_op.eval(feed_dict={model_in: xs_train, labels_in: ys_train})
                 summary_writer.add_summary(summary, epoch * batch_size + i)
-            if epoch%10==0:
-                # Save checkpoint after each epoch
-                if not os.path.exists(self.__savedir):
-                    os.makedirs(self.__savedir)
-                checkpoint_path = os.path.join(self.__savedir, "model")
-                filename = saver.save(sess, checkpoint_path, global_step=epoch)
-                print("Model saved in file: %s" % filename)
+
+            # Save checkpoint after each epoch
+            if not os.path.exists(self.__savedir):
+                os.makedirs(self.__savedir)
+            checkpoint_path = os.path.join(self.__savedir, "model")
+            filename = saver.save(sess, checkpoint_path, global_step=epoch)
+            print("Model saved in file: %s" % filename)
 
             # Shuffle data at each epoch end
             print("Shuffle data")
             data.shuffleData()
 
 if __name__ == '__main__':
-  #fire.Fire(TrainModel)
-  newtrain=TrainModel()
-  newtrain.train()
+  fire.Fire(TrainModel)

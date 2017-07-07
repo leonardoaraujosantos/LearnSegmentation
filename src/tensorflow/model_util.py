@@ -1,6 +1,4 @@
 import tensorflow as tf
-import numpy as np
-from math import sqrt, floor
 
 
 # References:
@@ -58,6 +56,12 @@ def put_kernels_on_grid(kernel, grid_Y, grid_X, pad=1):
     # scale to [0, 255] and convert to uint8
     return tf.image.convert_image_dtype(x7, dtype=tf.uint8)
 
+def label2show(label):
+    max_val = tf.reduce_max(label)
+    min_val = tf.reduce_min(label)
+    label=tf.div(tf.multiply(label, 255), (max_val-min_val))
+    return label
+
 
 def conv2d(x, k_h, k_w, channels_in, channels_out, stride, name="conv", viewWeights=False, pad='VALID',
            do_summary=True):
@@ -83,14 +87,7 @@ def conv2d(x, k_h, k_w, channels_in, channels_out, stride, name="conv", viewWeig
 
         # Visualize weights if needed
         if viewWeights == True:
-            # Get the power of 2 number closes to the floor(sqrt)
-            sq_num = floor(sqrt(channels_out))
-            # Calculate grid size
-            first_dim = 8
-            #remain_dim = channels_out-(first_dim**2)
-            second_dim = channels_out // first_dim
-            #print('ch_out:',channels_out,'first_dim:',first_dim,'second_dim:',second_dim)
-            tf.summary.image("W_grid", put_kernels_on_grid(w, first_dim, second_dim), 1)
+            tf.summary.image("W_grid", put_kernels_on_grid(w, 8, 8), 1)
 
         return activation
 
@@ -268,9 +265,3 @@ def augment_op(image_tensor, label_img_tensor):
         # Randomically select doing color augmentation
         imgs, labels = tf.cond(pred_flip, flip_image, no_flip_image, name='if_horz_flip')
         return imgs, labels
-
-
-# Caculate number of parameters
-# This will not return the number in bytes just the "number" of parameters
-def get_paremeter_size(train_variables):
-    return np.sum([np.product([xi.value for xi in x.get_shape()]) for x in train_variables])

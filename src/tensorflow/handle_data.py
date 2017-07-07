@@ -4,7 +4,7 @@ import h5py
 import lmdb
 import numpy as np
 import tensorflow as tf
-from augment_batch import AugmentBatch
+from augment_batch import AugmentDrivingBatch
 
 class HandleData:
     __xs = []
@@ -33,16 +33,12 @@ class HandleData:
     __val_batch_pointer = 0
 
     def __init__(self, path='DrivingData.h5', path_val='', train_perc=0.8, val_perc=0.2, shuffle=True):
-        self.__augment = AugmentBatch()
+        self.__augment = AugmentDrivingBatch()
         self.__train_perc = train_perc
         self.__val_perc = val_perc
         print("Loading training data")
         # Handle HDF5/LMDB datasets (Load content to memory)
         self.handle_file_dataset(path,path_val,train_perc,val_perc,shuffle)
-
-        # Allow split only if val_perc different than zero or
-        if val_perc == 0 and path_val == '':
-            self.__split_training = False
 
         # Get number of images
         self.__num_train_images = len(self.__train_xs)
