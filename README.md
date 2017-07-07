@@ -81,6 +81,7 @@ python train_unsupervised.py train --input=/dataset_lmdb
 * [HuPBA-90 data set](http://www.maia.ub.es/~sergio/linked/hupba90.zip)
 * [Sergio Caldera Samples](http://sergioescalera.com/code-and-data/)
 * [Evangelos Samples](https://people.cs.umass.edu/~kalo/)
+* [Pedestrian Parsing via Deep Decompositional Network](http://mmlab.ie.cuhk.edu.hk/projects/luoWTiccv2013DDN/index.html)
 
 ### References
 * [Semantic Segmentation chapter](https://leonardoaraujosantos.gitbooks.io/artificial-inteligence/content/image_segmentation.html)
