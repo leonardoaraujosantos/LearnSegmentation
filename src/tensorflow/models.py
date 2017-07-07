@@ -434,7 +434,7 @@ class AutoEncoderSegnet(object):
         self.__conv6_act = util.relu(self.__conv6_bn, do_summary=False)
 
         # CONV7: Input 19x19x64 after CONV 3x3 P:0 S:1 H_out: 1 + (19-3)/1 = 17, W_out=  1 + (19-3)/1 = 17
-        self.__conv7 = util.conv2d(self.__conv6_act, 3, 3, 32, 16, 1, "conv6", do_summary=False)
+        self.__conv7 = util.conv2d(self.__conv6_act, 3, 3, 32, 16, 1, "conv7", do_summary=False)
         self.__conv7_bn = util.batch_norm(self.__conv7, training_mode, name='bn_c6')
         self.__conv7_act = util.relu(self.__conv7_bn, do_summary=False)
 
