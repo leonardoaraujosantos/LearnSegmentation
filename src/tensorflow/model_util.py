@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np
+from math import sqrt, floor
 
 
 # References:
@@ -82,7 +83,12 @@ def conv2d(x, k_h, k_w, channels_in, channels_out, stride, name="conv", viewWeig
 
         # Visualize weights if needed
         if viewWeights == True:
-            tf.summary.image("W_grid", put_kernels_on_grid(w, 8, 8), 1)
+            # Calculate grid size
+            first_dim = 8#floor(sqrt(channels_out))
+            #remain_dim = channels_out-(first_dim**2)
+            second_dim = channels_out // first_dim
+            #print('ch_out:',channels_out,'first_dim:',first_dim,'second_dim:',second_dim)
+            tf.summary.image("W_grid", put_kernels_on_grid(w, first_dim, second_dim), 1)
 
         return activation
 

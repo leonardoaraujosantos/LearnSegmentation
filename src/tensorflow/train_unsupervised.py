@@ -42,8 +42,8 @@ class TrainModel(object):
         print('Number of parameters:', util.get_paremeter_size(tf.trainable_variables()))
 
         # Add input image on summary
-        tf.summary.image("input_image", model_in, 5)
-        tf.summary.image("output_image", model_out, 5)
+        tf.summary.image("input_image", model_in, 4)
+        tf.summary.image("output_image", model_out, 4)
 
 
         # Get all model "parameters" that are trainable
