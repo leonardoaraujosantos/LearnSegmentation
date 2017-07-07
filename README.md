@@ -76,6 +76,11 @@ python train_unsupervised.py train --input=/dataset_lmdb
 * [MIT Scene Parsing Benchmark](http://sceneparsing.csail.mit.edu/)
 * [MIT Scene Parsing Development Kit](https://github.com/CSAILVision/sceneparsing)
 * [Cambridge Camsec](http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamSeq01/)
+* [Human Part Segmentation](http://www2.informatik.uni-freiburg.de/~oliveira/dataset.html)
+* [ADE20K](http://groups.csail.mit.edu/vision/datasets/ADE20K/)
+* [HuPBA-90 data set](http://www.maia.ub.es/~sergio/linked/hupba90.zip)
+* [Sergio Caldera Samples](http://sergioescalera.com/code-and-data/)
+* [Evangelos Samples](https://people.cs.umass.edu/~kalo/)
 
 ### References
 * [Semantic Segmentation chapter](https://leonardoaraujosantos.gitbooks.io/artificial-inteligence/content/image_segmentation.html)
