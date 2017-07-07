@@ -83,6 +83,7 @@ def conv2d(x, k_h, k_w, channels_in, channels_out, stride, name="conv", viewWeig
 
         # Visualize weights if needed
         if viewWeights == True:
+            # Get the power of 2 number closes to the floor(sqrt)
             # Calculate grid size
             first_dim = 8#floor(sqrt(channels_out))
             #remain_dim = channels_out-(first_dim**2)
