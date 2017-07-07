@@ -43,8 +43,6 @@ class HandleData:
         # Allow split only if val_perc different than zero or
         if val_perc == 0 and path_val == '':
             self.__split_training = False
-        else:
-            self.__split_training = True
 
         # Get number of images
         self.__num_train_images = len(self.__train_xs)

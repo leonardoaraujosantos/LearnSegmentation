@@ -20,7 +20,7 @@ class TrainModel(object):
         self.__input_val = input_val
         self.__memfrac = mem_frac
 
-    def train(self, mode='fcn', epochs=600, learning_rate_init=0.001, checkpoint='', batch_size=50, l2_reg=0.0001):
+    def train(self, mode='fcn', epochs=600, learning_rate_init=0.001, checkpoint='', batch_size=50, l2_reg=0.0001, nclass=151):
         # Avoid allocating the whole memory
         gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=self.__memfrac)
         sess = tf.InteractiveSession(config=tf.ConfigProto(gpu_options=gpu_options))
@@ -32,13 +32,13 @@ class TrainModel(object):
 
         # Build model
         if mode.lower() == 'segnet':
-            segmentation_model = models.SegnetNoConnected()
+            segmentation_model = models.SegnetNoConnected(num_classes=nclass)
         elif mode.lower() == 'segnet_connected':
-            segmentation_model = models.SegnetConnected()
+            segmentation_model = models.SegnetConnected(num_classes=nclass)
         elif mode.lower() == 'segnet_connected_gate':
-            segmentation_model = models.SegnetConnectedGate()
+            segmentation_model = models.SegnetConnectedGate(num_classes=nclass)
         else:
-            segmentation_model = models.FullyConvolutionalNetworks()
+            segmentation_model = models.FullyConvolutionalNetworks(num_classes=nclass)
 
         # Get Placeholders
         model_in = segmentation_model.input
