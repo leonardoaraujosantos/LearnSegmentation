@@ -20,7 +20,7 @@ class TrainModel(object):
         self.__input_val = input_val
         self.__memfrac = mem_frac
 
-    def train(self, mode='fcn', epochs=600, learning_rate_init=0.001, checkpoint='', batch_size=50, l2_reg=0.0001, nclass=151):
+    def train(self, mode='fcn', epochs=600, learning_rate_init=0.001, checkpoint='', batch_size=50, l2_reg=0.0001, nclass=151, do_resize=False):
         # Avoid allocating the whole memory
         gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=self.__memfrac)
         sess = tf.InteractiveSession(config=tf.ConfigProto(gpu_options=gpu_options))
@@ -37,6 +37,8 @@ class TrainModel(object):
             segmentation_model = models.SegnetConnected(num_classes=nclass)
         elif mode.lower() == 'segnet_connected_gate':
             segmentation_model = models.SegnetConnectedGate(num_classes=nclass)
+        elif mode.lower() == 'fe_segmentation':
+            segmentation_model = models.CAE_AutoEncoderFE_MaxPool(num_classes=nclass)
         else:
             segmentation_model = models.FullyConvolutionalNetworks(num_classes=nclass)
 
@@ -116,7 +118,7 @@ class TrainModel(object):
         for epoch in range(epochs):
             for i in range(int(data.get_num_images() / batch_size)):
                 # Get training batch
-                xs_train, ys_train = data.LoadTrainBatch(batch_size, should_augment=True)
+                xs_train, ys_train = data.LoadTrainBatch(batch_size, should_augment=True, do_resize=do_resize)
 
                 # Send training batch to tensorflow graph (Dropout enabled)
                 train_step.run(feed_dict={model_in: xs_train, labels_in: ys_train})
@@ -124,7 +126,7 @@ class TrainModel(object):
                 # Display some information each x iterations
                 if i % 100 == 0:
                     # Get validation batch
-                    xs, ys = data.LoadValBatch(batch_size)
+                    xs, ys = data.LoadValBatch(batch_size, do_resize=do_resize)
                     # Send validation batch to tensorflow graph (Dropout disabled)
                     loss_value = loss_val.eval(feed_dict={model_in: xs, labels_in: ys})
                     print("Epoch: %d, Step: %d, Loss(Val): %g" % (epoch, epoch * batch_size + i, loss_value))
