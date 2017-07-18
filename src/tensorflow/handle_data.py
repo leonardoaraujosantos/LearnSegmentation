@@ -85,13 +85,15 @@ class HandleData:
             # image = scipy.misc.imread(train_xs[(train_batch_pointer + i) % num_train_images], mode="RGB")
             image = self.__train_xs[(self.__train_batch_pointer + i) % self.__num_train_images]
             # Crop top, resize to 66x200 and divide by 255.0
-            image = image / 255.0
             if do_resize:
-                image = scipy.misc.imresize(image, [size_x, size_y])
+                image = scipy.misc.imresize(image, [size_x, size_y]).astype(image.dtype)
+            image = image / 255.0
             x_out.append(image)
             label = self.__train_ys[(self.__train_batch_pointer + i) % self.__num_train_images]
             if do_resize:
-                label = scipy.misc.imresize(np.squeeze(label), [size_x, size_y])
+                # Seems that the imresize change the color if input is grayscale and not uint
+                # https://github.com/scipy/scipy/issues/4458
+                label = scipy.misc.imresize(np.squeeze(label.astype(np.uint8)), [size_x, size_y]).astype(label.dtype)
                 # Keep same shape ex: (100,100,1)
                 label = np.expand_dims(label, axis=-1)
             y_out.append(label)
@@ -121,15 +123,17 @@ class HandleData:
             # image = scipy.misc.imread(val_xs[(val_batch_pointer + i) % num_val_images], mode="RGB")
             image = self.__val_xs[(self.__val_batch_pointer + i) % self.__num_val_images]
             # Crop top, resize to 66x200 and divide by 255.0
-            image = image / 255.0
             if do_resize:
-                image = scipy.misc.imresize(image, [size_x, size_y])
+                image = scipy.misc.imresize(image, [size_x, size_y]).astype(image.dtype)
+            image = image / 255.0
             x_out.append(image)
             label = self.__train_ys[(self.__val_batch_pointer + i) % self.__num_val_images]
             if do_resize:
-                label = scipy.misc.imresize(np.squeeze(label), [size_x, size_y])
+                # Seems that the imresize change the color if input is grayscale and not uint
+                # https://github.com/scipy/scipy/issues/4458
+                label = scipy.misc.imresize(np.squeeze(label.astype(np.uint8)), [size_x, size_y]).astype(label.dtype)
                 # Keep same shape ex: (100,100,1)
-                label = np.expand_dims(label, axis=-1)
+                label = np.expand_dims(label, axis=-1).astype(label.dtype)
             y_out.append(label)
             self.__val_batch_pointer += batch_size
         return x_out, y_out
